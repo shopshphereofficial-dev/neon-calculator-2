@@ -35,13 +35,23 @@ jobs:
           cache: npm
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install SDK platform and build tools
+        # The runner image already ships the Android SDK; we only install the
+        # platform and build-tools this app compiles against. (The old
+        # android-actions/setup-android@v3 action fails now because it still
+        # asks sdkmanager for the retired "tools" package.)
         run: |
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager --install "platforms;android-35" "build-tools;35.0.0" "platform-tools" > /dev/null
-          echo "ANDROID_HOME=$ANDROID_HOME"
+          set -euo pipefail
+          export ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -maxdepth 2 -name sdkmanager -type f 2>/dev/null | sort | tail -1)
+          echo "Using sdkmanager: $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+          echo '--- installed platforms ---'
+          ls "$ANDROID_HOME/platforms"
+          echo '--- installed build-tools ---'
+          ls "$ANDROID_HOME/build-tools"
 
       - name: Cache Gradle
         uses: actions/cache@v4
@@ -140,7 +150,8 @@ jobs:
       - name: Verify the packaged APK
         run: |
           set -euo pipefail
-          BT="$ANDROID_HOME/build-tools/35.0.0"
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          echo "Using build-tools: $BT"
           APK="dist/NeonCalculator2-${{ steps.apks.outputs.version }}-release.apk"
           echo "=== badging ==="
           "$BT/aapt" dump badging "$APK" | grep -E "package:|application-label:|sdkVersion|targetSdkVersion|launchable-activity" || true
