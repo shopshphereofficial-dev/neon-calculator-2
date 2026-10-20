@@ -5,6 +5,11 @@ name: Build Android APK
 on:
   push:
     branches: [main]
+    # Docs-only changes should not mint a new signing key or a new artifact set.
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'store/**'
   pull_request:
     branches: [main]
   workflow_dispatch:
