@@ -35,23 +35,51 @@ jobs:
           cache: npm
 
       - name: Set up Android SDK
-        # The runner image already ships the Android SDK; we only install the
-        # platform and build-tools this app compiles against. (The old
-        # android-actions/setup-android@v3 action fails now because it still
-        # asks sdkmanager for the retired "tools" package.)
+        # Find the SDK on the runner, or lay down Google's command-line tools if
+        # the image no longer provides them, then install exactly the platform
+        # and build-tools this app compiles against.
+        # (android-actions/setup-android@v3 is no longer usable: it asks
+        # sdkmanager for the retired "tools" package and fails.)
         run: |
           set -euo pipefail
-          export ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
-          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
-          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
-          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -maxdepth 2 -name sdkmanager -type f 2>/dev/null | sort | tail -1)
-          echo "Using sdkmanager: $SDKMANAGER"
-          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
-          "$SDKMANAGER" --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+          echo "ANDROID_HOME=${ANDROID_HOME:-<unset>}"
+          echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-<unset>}"
+          for d in "${ANDROID_HOME:-}" "${ANDROID_SDK_ROOT:-}" /usr/local/lib/android/sdk /opt/android-sdk "$HOME/Android/Sdk"; do
+            if [ -n "$d" ] && [ -d "$d" ]; then echo "existing SDK dir: $d"; ls "$d" || true; fi
+          done
+          SDK=""
+          for d in "${ANDROID_HOME:-}" "${ANDROID_SDK_ROOT:-}" /usr/local/lib/android/sdk /opt/android-sdk "$HOME/Android/Sdk"; do
+            if [ -n "$d" ] && [ -d "$d" ]; then SDK="$d"; break; fi
+          done
+          if [ -z "$SDK" ]; then SDK="$HOME/android-sdk"; fi
+          mkdir -p "$SDK"
+          SDKMGR=$(find "$SDK" -name sdkmanager -type f 2>/dev/null | head -1 || true)
+          if [ -z "$SDKMGR" ]; then
+            echo 'sdkmanager not found - installing Android command-line tools'
+            mkdir -p "$SDK/cmdline-tools"
+            for url in \
+              https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip \
+              https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip ; do
+              echo "trying $url"
+              if curl -fsSL -o /tmp/cmdtools.zip "$url"; then break; fi
+            done
+            rm -rf "$SDK/cmdline-tools/latest" /tmp/cmdtools-unpack
+            unzip -q -o /tmp/cmdtools.zip -d /tmp/cmdtools-unpack
+            mv /tmp/cmdtools-unpack/cmdline-tools "$SDK/cmdline-tools/latest"
+            SDKMGR=$(find "$SDK" -name sdkmanager -type f | head -1)
+          fi
+          echo "Using SDK: $SDK"
+          echo "Using sdkmanager: $SDKMGR"
+          export ANDROID_HOME="$SDK" ANDROID_SDK_ROOT="$SDK"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
+          export JAVA_HOME="${JAVA_HOME:-}"
+          yes | "$SDKMGR" --licenses > /dev/null 2>&1 || true
+          "$SDKMGR" --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
           echo '--- installed platforms ---'
-          ls "$ANDROID_HOME/platforms"
+          ls "$SDK/platforms"
           echo '--- installed build-tools ---'
-          ls "$ANDROID_HOME/build-tools"
+          ls "$SDK/build-tools"
 
       - name: Cache Gradle
         uses: actions/cache@v4
