@@ -41,10 +41,15 @@
     </application>
 
     <!--
-      Permissions: intentionally NONE.
+      Permissions: this app declares NONE.
       The app is 100% offline - all HTML/CSS/JS ships inside the APK and is served
       through the AndroidX WebViewAssetLoader (https://localhost), so no socket is
       ever opened. No INTERNET, no storage, no ads, no analytics, no location.
+
+      The packaged APK's only permission entry is AndroidX Core's own signature-level
+      <permission> (${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION), which
+      it uses to protect a receiver it registers internally. It is granted silently,
+      scoped to this package, and grants no access to user data.
     -->
 
     <!-- Hardware hints only - neither is a permission. -->
