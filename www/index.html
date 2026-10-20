@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#090b17">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Neon Calculator 2</title>
+<style>
+:root{color-scheme:dark;--bg:#090b17;--panel:#121629;--line:#29324b;--cyan:#52f5ee;--purple:#c18cff;--muted:#8992ad}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;min-height:100vh;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;background:radial-gradient(ellipse at 50% 0,#1a2441 0,transparent 48%),var(--bg);color:#f4f7ff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:520px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) calc(15px + env(safe-area-inset-right)) calc(26px + env(safe-area-inset-bottom)) calc(15px + env(safe-area-inset-left))}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.brand{display:flex;gap:11px;align-items:center}.logo{width:45px;height:45px;display:grid;place-items:center;border-radius:14px;border:1px solid #52f5ee55;color:var(--cyan);background:#52f5ee12;font-size:23px;box-shadow:0 0 22px #52f5ee12}.brand h1{font-size:19px;margin:0;letter-spacing:-.5px}.brand h1 span{color:var(--cyan)}.sub{font-size:9px;letter-spacing:1.5px;color:var(--muted);margin-top:3px}.sound,.tab,.small,.key,.unit-type,select,button{font:inherit;cursor:pointer}.sound{border:1px solid var(--line);background:#151a2c;color:var(--cyan);border-radius:30px;padding:9px 12px;font-size:12px}
+.tabs{display:flex;gap:5px;padding:5px;border:1px solid var(--line);border-radius:15px;background:#111527;margin-bottom:15px}.tab{flex:1;border:0;border-radius:10px;padding:12px 4px;background:transparent;color:var(--muted);font-size:12px;font-weight:700}.tab.active{background:#52f5ee14;color:var(--cyan)}
+.panel{background:linear-gradient(145deg,#171c31,#101425);border:1px solid #343c56;border-radius:23px;padding:15px;box-shadow:0 20px 60px #0005}.display{border:1px solid #52f5ee33;border-radius:17px;background:radial-gradient(ellipse at 100% 0,#52f5ee10,transparent 60%),#090d1b;padding:15px;min-height:170px}.display-top{display:flex;align-items:center;justify-content:space-between;color:var(--cyan);font-size:9px;letter-spacing:1.2px}.display-actions{display:flex;gap:7px}.small{background:#171d30;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:5px 8px}.expr{margin-top:20px;min-height:25px;text-align:right;color:var(--muted);font:15px ui-monospace,monospace;overflow-wrap:anywhere}.result{text-align:right;font-size:clamp(35px,10vw,49px);font-weight:600;min-height:56px;overflow-wrap:anywhere;letter-spacing:-1.8px}.footline{display:flex;justify-content:space-between;color:#68728e;font:8px ui-monospace,monospace;letter-spacing:1px;margin-top:8px}.toolbar{display:flex;justify-content:space-between;align-items:center;margin:14px 2px 10px;gap:8px}.small.purple{color:var(--purple)}.hint{font-size:9px;color:#707a96}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.key{min-height:58px;border:1px solid #303852;border-radius:14px;background:linear-gradient(145deg,#252b42,#1a2034);color:#f5f7ff;font-size:21px;font-weight:600;box-shadow:0 3px 0 #080a13;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation}.key:active{transform:translateY(2px);box-shadow:0 1px 0 #080a13}.key.op{color:var(--cyan);border-color:#52f5ee33;background:#132536}.key.util{color:var(--purple);background:#281d3b;border-color:#c18cff30;font-size:16px}.key.eq{background:linear-gradient(135deg,#71fff1,#47cfdc);color:#07141b;border:0;font-size:25px}.sci{margin-bottom:9px}.note{text-align:center;color:var(--muted);font-size:10px;margin:16px 0 2px}.note b{color:var(--purple)}.view{display:none}.view.active{display:block}.heading{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 22px}.eyebrow{font-size:9px;color:var(--cyan);letter-spacing:1.5px}.heading h2{margin:7px 0 4px;font-size:25px}.heading p{margin:0;color:var(--muted);font-size:12px}.unit-types{display:flex;gap:7px;margin-bottom:20px}.unit-type{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 3px;color:var(--muted);background:transparent;font-size:11px}.unit-type.active{color:var(--cyan);border-color:#52f5ee55;background:#52f5ee12}.label{display:block;color:var(--muted);font-size:11px;margin:14px 0 7px}.amount{width:100%;padding:14px;border:1px solid var(--line);border-radius:12px;background:#090d1b;color:white;font-size:22px}.unitrow{display:grid;grid-template-columns:1fr 38px 1fr;gap:8px;align-items:end;margin-top:16px}.unitrow select{width:100%;min-width:0;background:#171c30;border:1px solid var(--line);color:white;padding:11px 5px;border-radius:10px;font-size:11px}.swap{height:39px;border:1px solid #52f5ee44;border-radius:10px;background:#52f5ee10;color:var(--cyan)}.converted{margin-top:22px;padding:18px;border:1px solid #52f5ee33;border-radius:14px;background:#090d1b}.converted small{display:block;color:var(--cyan);font-size:9px;letter-spacing:1px}.converted strong{display:block;font:30px ui-monospace,monospace;margin:8px 0;overflow-wrap:anywhere}.converted span{color:var(--muted);font-size:11px}.history-item{display:flex;justify-content:space-between;gap:10px;align-items:center;text-align:left;width:100%;padding:13px;margin:7px 0;background:#0d1120;border:1px solid var(--line);border-radius:12px;color:white}.history-item span:first-child{color:var(--muted);font:12px ui-monospace,monospace;overflow-wrap:anywhere}.history-item strong{color:var(--cyan);font:15px ui-monospace,monospace}.clear{width:100%;padding:12px;border:1px solid #ff667744;border-radius:10px;color:#ff8792;background:transparent;margin-top:10px}.bottom{text-align:center;color:#515c78;font:9px ui-monospace,monospace;letter-spacing:1px;margin-top:18px}
+@media(max-width:370px){.app{padding:calc(16px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left))}.panel{padding:11px}.key{min-height:52px}.sound{padding:9px}.brand h1{font-size:17px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="top">
+  <div class="brand"><div class="logo">▦</div><div><h1>Neon <span>Calculator 2</span></h1><div class="sub">SMART CALCULATOR</div></div></div>
+  <button class="sound" id="soundBtn">♫ Sound on</button>
+</header>
+<nav class="tabs">
+  <button class="tab active" data-view="calculator">▦ Calculator</button>
+  <button class="tab" data-view="converter">⇄ Converter</button>
+  <button class="tab" data-view="history">◷ History</button>
+</nav>
+<section class="view active" id="calculator">
+<div class="panel">
+  <div class="display">
+    <div class="display-top"><span id="modeLabel">STANDARD MODE</span><div class="display-actions"><button class="small" id="copyBtn">Copy</button><button class="small" id="clearExpr">↺</button></div></div>
+    <div class="expr" id="expression">Ready when you are</div><div class="result" id="result">0</div>
+    <div class="footline"><span>● READY</span><span>PRECISION ENGINE</span></div>
+  </div>
+  <div class="toolbar"><button class="small purple" id="sciToggle">∑ Scientific mode</button><span class="hint">Tap keys to play notes</span></div>
+  <div class="grid sci" id="scientific" hidden></div>
+  <div class="grid" id="keypad"></div>
+  <div class="note"><b>♫</b> A little piano note with every tap · Offline calculations</div>
+</div>
+</section>
+<section class="view" id="converter">
+<div class="panel">
+  <div class="heading"><div><div class="eyebrow">EVERYDAY TOOLS</div><h2>Unit converter</h2><p>Quick conversions, no clutter.</p></div><div class="logo">⇄</div></div>
+  <div class="unit-types"><button class="unit-type active" data-type="Length">Length</button><button class="unit-type" data-type="Weight">Weight</button><button class="unit-type" data-type="Temperature">Temperature</button></div>
+  <label class="label" for="amount">Amount</label><input class="amount" id="amount" type="number" value="1" inputmode="decimal">
+  <div class="unitrow"><label class="label">FROM<select id="fromUnit"></select></label><button class="swap" id="swap">⇄</button><label class="label">TO<select id="toUnit"></select></label></div>
+  <div class="converted"><small>RESULT</small><strong id="converted">0.001</strong><span id="toLabel">Kilometer</span></div>
+</div>
+</section>
+<section class="view" id="history">
+<div class="panel"><div class="heading"><div><div class="eyebrow">YOUR RECENT MATH</div><h2>History</h2><p>Calculations from this session.</p></div><div class="logo">◷</div></div><div id="historyList"><p class="hint">Your calculations will appear here.</p></div></div>
+</section>
+<footer class="bottom">NEON CALCULATOR 2 · MADE FOR YOUR FLOW · V1.0</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let expr='', result='0', evaluated=false, scientific=false, history=[];
+/* Local-only persistence: WebView localStorage. No network, no analytics. */
+const store={get(k,d){try{const v=localStorage.getItem('neoncalc.'+k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('neoncalc.'+k,JSON.stringify(v))}catch(e){}}};
+let sound=store.get('sound',true);
+const basic=[['AC','±','%','÷'],['7','8','9','×'],['4','5','6','−'],['1','2','3','+'],['⌫','0','.','=']];
+const sci=[['sin','cos','tan','√'],['ln','log','x²','xʸ'],['π','e','(',')']];
+function tone(key){if(!sound)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!window.audioCtx)window.audioCtx=new C();const c=window.audioCtx;if(c.state==='suspended')c.resume();let n=c.currentTime,f=330+(String(key).charCodeAt(0)%17)*27;for(const [type,freq,vol,dur] of [['sine',f,.13,.28],['triangle',f*2,.025,.16]]){let o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,n);g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(vol,n+.008);g.gain.exponentialRampToValueAtTime(.0001,n+dur);o.connect(g);g.connect(c.destination);o.start(n);o.stop(n+dur+.01)}}catch(e){}}
+function fmt(n){if(!Number.isFinite(n))throw Error('Math error');return Object.is(n,-0)?'0':Number(n.toPrecision(11)).toString()}
+function calc(s){let x=s.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/π/g,'Math.PI').replace(/\be\b/g,'Math.E').replace(/√\(/g,'Math.sqrt(').replace(/√/g,'Math.sqrt').replace(/sin\(/g,'Math.sin(Math.PI/180*').replace(/cos\(/g,'Math.cos(Math.PI/180*').replace(/tan\(/g,'Math.tan(Math.PI/180*').replace(/log\(/g,'Math.log10(').replace(/ln\(/g,'Math.log(').replace(/(\d+(?:\.\d+)?)%/g,'($1/100)').replace(/(\d+(?:\.\d+)?)²/g,'($1**2)');if(!/^[0-9+\-*/().,%\sA-Za-z_*]+$/.test(x)||/\b(window|document|globalThis|constructor|Function|eval|fetch|import)\b/.test(x))throw Error('Invalid');return fmt(Function('"use strict";return ('+x+')')())}
+function paint(){ $('expression').textContent=expr||'Ready when you are';$('result').textContent=result;$('result').style.color=result==='Error'?'#ff8792':'';}
+function press(k){tone(k);if(k==='AC'){expr='';result='0';evaluated=false;paint();return}if(k==='⌫'){expr=expr.slice(0,-1);evaluated=false;paint();return}if(k==='±'){expr=expr.startsWith('-')?expr.slice(1):'-'+expr;evaluated=false;paint();return}if(k==='='){if(!expr.trim())return;try{let old=expr;result=calc(expr);history.unshift({expr:old,result,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});history=history.slice(0,50);store.set('history',history);expr=result;evaluated=true;renderHistory()}catch(e){result='Error';evaluated=false}paint();return}if(k==='%'){expr+='%'}else if(k==='√'){expr+='√('}else if(['sin','cos','tan','ln','log'].includes(k)){expr+=k+'('}else if(k==='x²'){expr+='²'}else if(k==='xʸ'){expr+='**'}else if(evaluated&&/[0-9.(πe]/.test(k)){expr=k}else{expr+=k}evaluated=false;paint()}
+function addKeys(container,rows,scient=false){container.innerHTML='';rows.flat().forEach(k=>{let b=document.createElement('button');b.className='key '+(['÷','×','−','+','%'].includes(k)?'op ':'')+(['AC','±','⌫'].includes(k)?'util ':'')+(k==='='?'eq':'');b.textContent=k;b.onclick=()=>press(k);container.appendChild(b)})}
+addKeys($('keypad'),basic);addKeys($('scientific'),sci,true);
+$('soundBtn').onclick=()=>{sound=!sound;store.set('sound',sound);$('soundBtn').textContent=sound?'♫ Sound on':'♫ Sound off';if(sound)tone('♪')};
+$('sciToggle').onclick=()=>{scientific=!scientific;$('scientific').hidden=!scientific;$('sciToggle').textContent=scientific?'∑ Scientific on':'∑ Scientific mode';$('modeLabel').textContent=scientific?'SCIENTIFIC MODE':'STANDARD MODE'};
+$('clearExpr').onclick=()=>{expr='';paint()};$('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(result);tone('copy');$('copyBtn').textContent='Copied';setTimeout(()=>$('copyBtn').textContent='Copy',900)}catch(e){}};
+document.addEventListener('keydown',e=>{if(/^[0-9.]$/.test(e.key))press(e.key);else if(['+','-','*','/'].includes(e.key)){e.preventDefault();press(({'+':'+','-':'−','*':'×','/':'÷'})[e.key])}else if(e.key==='Enter'||e.key==='=')press('=');else if(e.key==='Backspace')press('⌫');else if(e.key==='Escape')press('AC');else if(e.key==='%'||e.key==='('||e.key===')')press(e.key)});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.view));tone(b.dataset.view)});
+function renderHistory(){let el=$('historyList');if(!history.length){el.innerHTML='<p class="hint">Your calculations will appear here.</p>';return}el.innerHTML='';history.forEach(h=>{let b=document.createElement('button');b.className='history-item';let left=document.createElement('span');left.textContent=h.expr+' · '+h.time;let right=document.createElement('strong');right.textContent=h.result;b.append(left,right);b.onclick=()=>{expr=h.expr;result=h.result;evaluated=true;paint();document.querySelector('[data-view="calculator"]').click()};el.appendChild(b)});let c=document.createElement('button');c.className='clear';c.textContent='Clear history';c.onclick=()=>{history=[];store.set('history',history);renderHistory()};el.appendChild(c)}
+const units={Length:{Millimeter:.001,Centimeter:.01,Meter:1,Kilometer:1000,Inch:.0254,Foot:.3048,Mile:1609.344},Weight:{Milligram:.000001,Gram:.001,Kilogram:1,Pound:.45359237,Ounce:.028349523125},Temperature:{Celsius:0,Fahrenheit:1,Kelvin:2}};
+let type='Length';
+function fillUnits(){let names=Object.keys(units[type]);$('fromUnit').innerHTML='';$('toUnit').innerHTML='';names.forEach(n=>{$('fromUnit').add(new Option(n,n));$('toUnit').add(new Option(n,n))});$('fromUnit').value=names[0];$('toUnit').value=names[Math.min(2,names.length-1)];convert()}
+function convert(){let v=Number($('amount').value),f=$('fromUnit').value,t=$('toUnit').value,out;if(!Number.isFinite(v)){out='—'}else if(type==='Temperature'){let c=f==='Fahrenheit'?(v-32)*5/9:f==='Kelvin'?v-273.15:v;out=fmt(t==='Fahrenheit'?c*9/5+32:t==='Kelvin'?c+273.15:c)}else out=fmt(v*units[type][f]/units[type][t]);$('converted').textContent=out;$('toLabel').textContent=t}
+document.querySelectorAll('.unit-type').forEach(b=>b.onclick=()=>{type=b.dataset.type;document.querySelectorAll('.unit-type').forEach(x=>x.classList.toggle('active',x===b));fillUnits()});
+['amount','fromUnit','toUnit'].forEach(id=>$(id).addEventListener('input',convert));$('swap').onclick=()=>{let a=$('fromUnit').value;$('fromUnit').value=$('toUnit').value;$('toUnit').value=a;convert();tone('swap')};fillUnits();
+/* --- native shell boot --- */
+history=Array.isArray(store.get('history',[]))?store.get('history',[]).slice(0,50):[];
+renderHistory();
+$('soundBtn').textContent=sound?'♫ Sound on':'♫ Sound off';
+/* Android WebView needs a real user gesture before audio may play. */
+function unlockAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(C&&!window.audioCtx)window.audioCtx=new C();if(window.audioCtx&&window.audioCtx.state==='suspended')window.audioCtx.resume()}catch(e){}}
+['pointerdown','touchstart','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio,{once:true,passive:true}));
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')unlockAudio()});
+/* Block navigation away from the bundled app (offline, no external links). */
+window.addEventListener('dragover',e=>e.preventDefault());
+</script>
+</body></html>

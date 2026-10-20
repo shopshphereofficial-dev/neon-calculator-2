@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Neon Calculator 2 palette -->
+    <color name="neonBackground">#090B17</color>
+    <color name="neonPanel">#121629</color>
+    <color name="neonCyan">#52F5EE</color>
+    <color name="neonPurple">#C18CFF</color>
+    <color name="colorPrimary">#52F5EE</color>
+    <color name="colorPrimaryDark">#090B17</color>
+    <color name="colorAccent">#C18CFF</color>
+</resources>

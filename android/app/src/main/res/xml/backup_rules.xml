@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nothing sensitive is stored: only the local calculation history and the
+     sound preference, both in WebView localStorage. -->
+<full-backup-content>
+    <include domain="sharedpref" path="." />
+</full-backup-content>

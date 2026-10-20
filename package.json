@@ -1,0 +1,20 @@
+{
+  "name": "neon-calculator-2",
+  "version": "1.0.0",
+  "description": "Neon Calculator 2 - offline neon calculator for Android (standard + scientific, piano key sounds, unit converter, history). Built with Capacitor.",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test": "node tools/smoke_test.js",
+    "assets": "python3 tools/make_assets.py",
+    "sync": "cap sync android",
+    "build:debug": "cap sync android && cd android && ./gradlew assembleDebug",
+    "build:release": "cap sync android && cd android && ./gradlew assembleRelease"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/cli": "^7.6.9",
+    "@capacitor/core": "^7.6.9",
+    "@capacitor/splash-screen": "^7.0.5"
+  }
+}
