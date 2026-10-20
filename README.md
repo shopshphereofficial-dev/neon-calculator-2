@@ -39,6 +39,7 @@ The CI workflow produces two APKs:
 | --- | --- |
 | `NeonCalculator2-1.0.0-release.apk` | Install this one. Release build, signed, no debug suffix. |
 | `NeonCalculator2-1.0.0-debug.apk` | Debug build (package id ends in `.debug`, so it can sit side by side). |
+| `neoncalculator2-signing-key` | The keystore that signed that APK, with `keystore-info.txt` holding its alias and password. |
 
 Download it from the **Actions** tab → latest *Build Android APK* run → **Artifacts**,
 copy it to the phone, and open it. Android will ask you to allow installing apps from your
@@ -53,15 +54,30 @@ adb install -r NeonCalculator2-1.0.0-release.apk
 
 ## Permissions
 
-**None.** The generated `AndroidManifest.xml` declares no `<uses-permission>` entries at
-all. The web assets are served by AndroidX's `WebViewAssetLoader` from inside the APK, so
-the app never opens a network socket. The CI job asserts this and **fails the build** if
-`INTERNET`, `ACCESS_NETWORK_STATE`, `AD_ID`, location, camera, microphone or storage
-permissions ever appear in the packaged APK. You can check any APK yourself:
+The manifest in this repo declares **no permissions at all**. The web assets are served by
+AndroidX's `WebViewAssetLoader` from inside the APK, so the app never opens a network
+socket.
+
+The one entry that appears in the packaged APK is
+`com.neoncalculator.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`. That is AndroidX Core
+declaring a *signature-level permission for itself* (protection level `signature`,
+self-scoped to this app's package) so it can protect a receiver it registers internally.
+It is not a system permission, is granted silently, cannot reach any user data, and never
+prompts. There is no `INTERNET`, network-state, location, camera, microphone, storage,
+contacts, phone or advertising-ID permission.
+
+The CI job reads the packaged APK's permission list and **fails the build** if any of those
+sensitive permissions ever appear. Check any APK yourself:
 
 ```bash
-aapt dump permissions NeonCalculator2-1.0.0-release.apk   # prints nothing
+aapt dump permissions NeonCalculator2-1.0.0-release.apk
+# package: com.neoncalculator.app
+# uses-permission: name='com.neoncalculator.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
 ```
+
+To verify the network claim directly: with the app installed, `adb shell dumpsys package
+com.neoncalculator.app | grep -i internet` returns nothing, and the app runs normally with
+the device in flight mode.
 
 ## Build it yourself
 
